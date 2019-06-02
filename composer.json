@@ -15,6 +15,10 @@
         }
     },
     "scripts": {
+        "build": [
+            "@composer install --no-dev",
+            "bin/build"
+        ],
         "phpstan:analyse": "phpstan analyse",
         "test": "phpunit",
         "test:e2e": "phpunit --testsuite E2E"
@@ -29,8 +33,11 @@
         "masterminds/html5": "^2.6",
         "symfony/css-selector": "^4.3",
         "symfony/dom-crawler": "^4.3",
+        "czproject/git-php": "^3.17",
+        "symfony/filesystem": "^4.3",
         "league/uri-schemes": "^1.2",
-        "league/uri-components": "^1.8"
+        "league/uri-components": "^1.8",
+        "php": "^7.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.1",
