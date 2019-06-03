@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Roots\WordPressPackager\Util;
 
+use League\Uri\Components\HierarchicalPath as Path;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -10,10 +11,6 @@ class DirectoryTest extends TestCase
 {
     public function testMktemp()
     {
-        $expectedTemporaryDirectoryPathPrefix = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR)
-            . DIRECTORY_SEPARATOR
-            . 'wordpress-packager';
-
         $filesystem = $this->getMockBuilder(Filesystem::class)
                            ->setMethods(['mkdir'])
                            ->getMock();
@@ -21,9 +18,13 @@ class DirectoryTest extends TestCase
         $filesystem->expects($this->once())
                    ->method('mkdir')
                    ->with(
-                       $this->stringStartsWith($expectedTemporaryDirectoryPathPrefix)
+                       $this->stringStartsWith(sys_get_temp_dir())
                    );
 
-        Directory::mktemp($filesystem);
+        // this will throw if invalid path
+        $tempPath = new Path(Directory::mktemp($filesystem));
+
+        $this->assertEquals(sys_get_temp_dir(), $tempPath->getDirname());
+        $this->assertStringStartsWith('wordpress-packager', $tempPath->getBasename());
     }
 }
