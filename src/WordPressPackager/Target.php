@@ -4,13 +4,12 @@ declare(strict_types=1);
 namespace Roots\WordPressPackager;
 
 use Composer\Package\PackageInterface;
-use Cz\Git\GitRepository;
-use Roots\WordPressPackager\Util\Directory;
+use Cz\Git\IGit;
 use Symfony\Component\Filesystem\Filesystem;
 
 class Target
 {
-    /** @var GitRepository */
+    /** @var IGit */
     protected $gitRepo;
 
     /** @var Filesystem */
@@ -19,21 +18,10 @@ class Target
     /** @var string[] */
     protected $gitTags;
 
-    protected function __construct(GitRepository $gitRepo, Filesystem $filesystem)
+    public function __construct(IGit $gitRepo, Filesystem $filesystem)
     {
         $this->gitRepo = $gitRepo;
         $this->filesystem = $filesystem;
-    }
-
-    public static function make(string $gitRemote): self
-    {
-        $filesystem = new Filesystem();
-        $gitRepo = GitRepository::cloneRepository(
-            $gitRemote,
-            Directory::mktemp($filesystem)
-        );
-
-        return new static($gitRepo, $filesystem);
     }
 
     protected function getGitTags(): array
